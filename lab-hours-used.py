@@ -9,22 +9,20 @@ import time
 
 
 
-book_name="book.xlsx"       # mention name of the excel sheet
-start_row = 2               # mention the starting row
-end_row = 4                 # mention the ending row
-rhn_col="D"                 # mention the col of the rhn id in excel sheet
-lab_usd_col="AL"            # mention the col of the lab used in excel sheet
+book_name="lab-hours-used.xlsx"       # mention name of the excel sheet
+rhn_col="A"                 # mention the col of the rhn id in excel sheet
+lab_usd_col="B"            # mention the col of the lab used in excel sheet
 passwd="Itech@123"          # mention the password of rhn id's
-course_page_url="https://rha.ole.redhat.com/rha/app/courses/rh124-9.0/pages/pr01/1d8c88e3-618c-41d5-86f1-b679816c6590"
+course_page_url='https://rha.ole.redhat.com/rha/app/courses/rh124-9.0/pages/pr01/1d8c88e3-618c-41d5-86f1-b679816c6590'
 
 # mention the url of preferred class and course url in the course_page_url
 
 wb=Workbook()
 wb=load_workbook(book_name)
 ws=wb.active
-
-
-for row in range(start_row, end_row+1):
+end_row = ws.max_row
+print(end_row)
+for row in range(2, end_row+1):
     
     rhn_cell = f"{rhn_col}{row}"
     data=ws[rhn_cell].value
