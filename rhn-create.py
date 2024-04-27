@@ -1,8 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from openpyxl.workbook import Workbook
 from openpyxl import load_workbook
 import time
@@ -10,19 +7,16 @@ from socket import gaierror
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib,ssl
+from selenium.common.exceptions import NoSuchElementException 
+from selenium.common.exceptions import ElementNotInteractableException
 
-
-
-
-
-
-book_name = "rhnmail.xlsx"          # mention the name of the excel sheet
-start_row=1         # mention the starting row
-end_row=2             # mention the ending row
+book_name = "rhn-create.xlsx"          # mention the name of the excel sheet
+start_row=2         # mention the starting row
 email_col='A'           # mention the col of email id in excel sheet
+phone_number_col="B"     # mention the column of phone number in excel sheet
 first_name_col = "C"     # mention the Column of first name  in excel sheet
 last_name_col = "D"      # mention the column of the last name  in excel sheet
-phone_number_col="B"     # mention the column of phone number in excel sheet
+
 
 passwd="vectra123."               # mention the password to be set 
 company_name = "Thamrabharani Engineering College"       # mention the name of the college or name
@@ -76,13 +70,18 @@ def send_mail(mail_id,name):
 wb=Workbook()
 wb=load_workbook(book_name)
 ws=wb.active
-
+end_row=ws.max_row           # mention the ending row
 
 for row in range(start_row, end_row+1):
     if check_internet():
 
         mail_id = ws[f"{email_col}{row}"].value
-        if mail_id is None:
+        f_name=ws[f'{first_name_col}{row}'].value
+        l_name=ws[f'{last_name_col}{row}'].value
+        phone_number = ws[f'{phone_number_col}{row}'].value
+        if mail_id is None or f_name is None or l_name is None or phone_number is None:
+            r_cell=f"E{row}"
+            ws[r_cell]='credential error'
             continue
         driver = webdriver.Chrome()
         driver.maximize_window()
@@ -110,20 +109,24 @@ for row in range(start_row, end_row+1):
         passwordConfirmation.send_keys(passwd)
         time.sleep(5)
 
-        #accountName = driver.find_element(By.NAME,'accountName')
-        #accountName.send_keys(compnay_name)
-        time.sleep(5)
+        try:
+            accountName = driver.find_element(By.NAME,'accountName')
+            accountName.send_keys(company_name)
+            time.sleep(5)
+        except (NoSuchElementException,ElementNotInteractableException):
+            print("Account Name field not found, moving to the next element.")
+
 
         title = driver.find_element(By.NAME,'title')
         title.send_keys('student')
         time.sleep(5)
 
-        f_name=ws[f'{first_name_col}{row}'].value
+        
         firstName = driver.find_element(By.NAME,'firstName')
         firstName.send_keys(f_name)
         time.sleep(5)
 
-        l_name=ws[f'{last_name_col}{row}'].value
+        
         lastName = driver.find_element(By.NAME,'lastName')
         lastName.send_keys(l_name)
         time.sleep(5)
@@ -145,7 +148,7 @@ for row in range(start_row, end_row+1):
         defaultPhysicalAddressState.send_keys("Tamil Nadu")
         time.sleep(5)
 
-        phone_number = ws[f'{phone_number_col}{row}'].value
+        
         phoneNumber = driver.find_element(By.NAME,'phoneNumber')
         phoneNumber.send_keys(phone_number)
         time.sleep(5)
@@ -157,3 +160,4 @@ for row in range(start_row, end_row+1):
         time.sleep(3)
         driver.quit()
 
+wb.save(book_name)
