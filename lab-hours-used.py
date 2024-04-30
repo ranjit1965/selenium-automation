@@ -109,7 +109,8 @@ for row in range(2, end_row+1):
         ws[lab_used_cell]=used[16:]
         
         driver.quit()
-    except Exception :
+    except Exception as e:
+        print(e)
         wb.save(book_name)
 
 
