@@ -26,7 +26,9 @@ for row in range(2, end_row+1):
     
     rhn_cell = f"{rhn_col}{row}"
     data=ws[rhn_cell].value
+    lab_used_cell=f"{lab_usd_col}{row}"
     if data is None:
+        ws[lab_used_cell]="credential error"
         continue
     
     if data == 'No' or data == 'NO' or data == 'no':
@@ -37,10 +39,7 @@ for row in range(2, end_row+1):
         #driver.maximize_window()
         
         driver.get("https://rha.ole.redhat.com/rha/app/login")
-        
-        WebDriverWait(driver, 20).until(
-            lambda x: x.execute_script("return document.readyState === 'complete'")
-        )
+
         time.sleep(15)
         email_elem = driver.find_element(By.NAME, "username") 
         email_elem.send_keys(data)
@@ -53,27 +52,20 @@ for row in range(2, end_row+1):
         
         time.sleep(5)
         password_elem = driver.find_element(By.ID, "password")
+        password_elem.send_keys(passwd)
         
-        if row == 3:
-            password_elem.send_keys('sdfwdf')
-        else:
-            password_elem.send_keys(passwd)
-        
-        # time.sleep(5)
+        time.sleep(5)
         
         login_box = driver.find_element(By.ID, 'rh-password-verification-submit-button')
         login_box.click()
-        # time.sleep(10)
+        time.sleep(10)
         
 
-        WebDriverWait(driver=driver, timeout=10).until(
-        lambda x: x.execute_script("return document.readyState === 'complete'")
-        )
         try:
             wait = WebDriverWait(driver, 7)
             element = wait.until(EC.visibility_of_element_located((By.ID, "rh-login-form-error-title")))
             if element is not  None :
-                lab_used_cell=f"{lab_usd_col}{row}"
+                
                 ws[lab_used_cell]="credential error"
                 driver.quit()
                 continue
@@ -94,13 +86,11 @@ for row in range(2, end_row+1):
         time.sleep(5)
 
         """
-        WebDriverWait(driver, 15).until(
-            lambda x: x.execute_script("return document.readyState === 'complete'")
-        )
+
         time.sleep(15)
         lab_box = driver.find_element(By.ID, 'course-tabs-tab-8')
         lab_box.click()
-        time.sleep(5) 
+        time.sleep(7) 
         
         lab_hour = driver.find_element(By.CLASS_NAME, 'instruction-wrapper')
         
