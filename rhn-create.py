@@ -11,18 +11,17 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotInteractableException
 
 book_name = "rhn-create.xlsx"          # mention the name of the excel sheet
-start_row=2         # mention the starting row
+start_row=2      # mention the starting row
 email_col='A'           # mention the col of email id in excel sheet
 phone_number_col="B"     # mention the column of phone number in excel sheet
 first_name_col = "C"     # mention the Column of first name  in excel sheet
 last_name_col = "D"      # mention the column of the last name  in excel sheet
 
-
 passwd="vectra123."               # mention the password to be set 
-company_name = "Thamrabharani Engineering College"       # mention the name of the college or name
-address="Palayamkottai"              # mention the address as direct value
+company_name = "Mspvl Polytechnic College"       # mention the name of the college or name
+address="50/2, Pavoorchatram"              # mention the address as direct value
 city="Tirunelveli"                 # mention the city as direct value
-
+postal_code="627808"
 
 
 def check_internet():
@@ -42,7 +41,7 @@ def send_mail(mail_id,name):
     mypass=""
     l=[114, 105, 98, 117, 108, 103, 118, 104, 109, 114, 102, 119, 118, 118, 106, 98]
     for i in l:
-        mypass+=i
+        mypass+=chr(i)
     message=MIMEMultipart()
     message["Subject"]="Accept the mail from red hat"
     message["From"]=mymail
@@ -64,7 +63,7 @@ def send_mail(mail_id,name):
     sms.login(mymail,mypass)
     sms.sendmail(mymail,mail_id,message.as_string())
     sms.quit()
-
+    print("mail sent")
 
 
 wb=Workbook()
@@ -89,25 +88,25 @@ for row in range(start_row, end_row+1):
 
         user_type= driver.find_element(By.ID, "userTypePERSONAL") 
         user_type.click()
-        time.sleep(5)
+        time.sleep(3)
         
         
         
         login = driver.find_element(By.NAME,'login')
         login.send_keys(mail_id)
 
-        time.sleep(5)
+        time.sleep(1)
         email = driver.find_element(By.NAME,'primaryEmail')
         email.send_keys(mail_id)
-        time.sleep(5)
+        time.sleep(1)
         
         password = driver.find_element(By.NAME,'password')
         password.send_keys(passwd)
-        time.sleep(5)
+        time.sleep(1)
         
         passwordConfirmation = driver.find_element(By.NAME,'passwordConfirmation')
         passwordConfirmation.send_keys(passwd)
-        time.sleep(5)
+        time.sleep(1)
 
         try:
             accountName = driver.find_element(By.NAME,'accountName')
@@ -119,43 +118,45 @@ for row in range(start_row, end_row+1):
 
         title = driver.find_element(By.NAME,'title')
         title.send_keys('student')
-        time.sleep(5)
+        time.sleep(1)
 
         
         firstName = driver.find_element(By.NAME,'firstName')
         firstName.send_keys(f_name)
-        time.sleep(5)
+        time.sleep(1)
 
         
         lastName = driver.find_element(By.NAME,'lastName')
         lastName.send_keys(l_name)
-        time.sleep(5)
+        time.sleep(1)
 
         defaultPhysicalAddressCountry=driver.find_element(By.NAME,'defaultPhysicalAddress.countryCode')
         defaultPhysicalAddressCountry.send_keys("India")
-        time.sleep(5)
+        time.sleep(1)
 
         defaultPhysicalAddressAddress1 = driver.find_element(By.NAME,"defaultPhysicalAddress.address1")
         defaultPhysicalAddressAddress1.send_keys(address)
-        time.sleep(5)
+        time.sleep(1)
 
-
+        postalCodeField = driver.find_element(By.NAME,"defaultPhysicalAddress.postalCode")
+        postalCodeField.send_keys(postal_code)
+        time.sleep(1)
         defaultPhysicalAddressCity = driver.find_element(By.NAME,"defaultPhysicalAddress.city")
         defaultPhysicalAddressCity.send_keys(city)
-        time.sleep(5)
+        time.sleep(1)
 
         defaultPhysicalAddressState = driver.find_element(By.NAME,"defaultPhysicalAddress.state")
         defaultPhysicalAddressState.send_keys("Tamil Nadu")
-        time.sleep(5)
+        time.sleep(1)
 
         
         phoneNumber = driver.find_element(By.NAME,'phoneNumber')
         phoneNumber.send_keys(phone_number)
-        time.sleep(5)
+        time.sleep(2)
 
         subBtn = driver.find_element(By.NAME,'_eventId_submit')
         subBtn.click()
-        time.sleep(3)
+        time.sleep(2)
         send_mail(mail_id,f_name)
         time.sleep(3)
         driver.quit()
