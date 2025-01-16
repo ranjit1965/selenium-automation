@@ -157,8 +157,8 @@ for row in range(start_row, end_row+1):
         subBtn = driver.find_element(By.NAME,'_eventId_submit')
         subBtn.click()
         time.sleep(2)
-        send_mail(mail_id,f_name)
-        time.sleep(3)
+       # send_mail(mail_id,f_name)
+       # time.sleep(3)
         driver.quit()
 
 wb.save(book_name)
